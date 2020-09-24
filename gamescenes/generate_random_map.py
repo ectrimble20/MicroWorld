@@ -134,11 +134,15 @@ class GenerateRandomMap(GameScene):
         else:
             raise TypeError(f"Got a non-numeric map size: {map_size}")
         self.map_grid = generate_height_grid(generate_noise_grid(map_size, map_size, map_seed))
-        self.pv_img.fill((255, 255, 255))
+        self.pv_img.fill((0, 0, 0))
         # okay, should have a height grid now, let's make the image
+        # we also want to offset the image so it's centered in the preview area, so we'll need to adjust the X/Y
+        # values of the image according to the offset from 256
+        x_off = (256 - self.map_grid.width) // 2
+        y_off = (256 - self.map_grid.height) // 2
         for y in range(self.map_grid.height):
             for x in range(self.map_grid.width):
-                self.pv_img.set_at((x, y), self._c_map[self.map_grid[(x, y)]])
+                self.pv_img.set_at((x+x_off, y+y_off), self._c_map[self.map_grid[(x, y)]])
         # reload PV image element
         pv_rect = self.ui_elements['pv_image'].relative_rect
         self.ui_elements['pv_image'] = UIImage(pv_rect, self.pv_img, self.gui, self.ui_elements['panel'])
