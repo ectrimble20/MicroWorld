@@ -4,7 +4,7 @@ from pygame_gui.elements import UIPanel, UILabel, UIButton, UISelectionList
 from lib.base import GameScene
 from lib.const import GUI_BUTTON_PRESSED
 from lib.eventbus import *
-from lib.const import CHANGE_GAME_SCENE, GUI_SELECT_CHANGED, GUI_SELECT_DROPPED
+from lib.const import EVENT_CHANGE_GAME_SCENE, GUI_SELECT_CHANGED, GUI_SELECT_DROPPED
 from lib.config import get_param
 
 
@@ -57,7 +57,7 @@ class LoadSavedGame(GameScene):
     def on_button_click(self, event):
         if event.type == GUI_BUTTON_PRESSED:
             if event.ui_element == self.ui_elements['btn_back']:
-                post_event(CHANGE_GAME_SCENE, to_scene='menu')
+                post_event(EVENT_CHANGE_GAME_SCENE, to_scene='menu')
             elif event.ui_element == self.ui_elements['btn_delete']:
                 if self.ui_elements['game_select'].get_single_selection() is not None:
                     # TODO we need to have some kind of "Are you sure?" option in here

@@ -4,7 +4,7 @@ from pygame_gui.elements import UIPanel, UILabel, UIButton
 from lib.base import GameScene
 from lib.const import GUI_BUTTON_PRESSED
 from lib.eventbus import *
-from lib.const import CHANGE_GAME_SCENE
+from lib.const import EVENT_CHANGE_GAME_SCENE
 from lib.config import get_param
 
 
@@ -51,11 +51,11 @@ class MainMenu(GameScene):
             if event.ui_element == self.ui_elements['btn_quit']:
                 post_event(QUIT)
             elif event.ui_element == self.ui_elements['btn_new']:
-                post_event(CHANGE_GAME_SCENE, to_scene='map_select')
+                post_event(EVENT_CHANGE_GAME_SCENE, to_scene='map_select')
             elif event.ui_element == self.ui_elements['btn_load']:
-                post_event(CHANGE_GAME_SCENE, to_scene='load')
+                post_event(EVENT_CHANGE_GAME_SCENE, to_scene='load')
             elif event.ui_element == self.ui_elements['btn_editor']:
-                post_event(CHANGE_GAME_SCENE, to_scene='editor_menu')
+                post_event(EVENT_CHANGE_GAME_SCENE, to_scene='editor_menu')
             elif event.ui_element == self.ui_elements['btn_settings']:
-                post_event(CHANGE_GAME_SCENE, to_scene='settings')
+                post_event(EVENT_CHANGE_GAME_SCENE, to_scene='settings')
 

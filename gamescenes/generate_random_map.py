@@ -2,7 +2,7 @@ import logging
 from pygame import Rect, Surface
 from pygame_gui.elements import UIPanel, UILabel, UIButton, UIDropDownMenu, UITextEntryLine, UIImage, UIHorizontalSlider
 from lib.base import GameScene
-from lib.const import GUI_BUTTON_PRESSED, CHANGE_GAME_SCENE
+from lib.const import GUI_BUTTON_PRESSED, EVENT_CHANGE_GAME_SCENE
 from lib.eventbus import *
 from lib.config import get_param
 from lib.generate import gen_int_string
@@ -111,7 +111,7 @@ class GenerateRandomMap(GameScene):
     def on_button_click(self, event):
         if event.type == GUI_BUTTON_PRESSED:
             if event.ui_element == self.ui_elements['btn_back']:
-                post_event(CHANGE_GAME_SCENE, to_scene='map_select')
+                post_event(EVENT_CHANGE_GAME_SCENE, to_scene='map_select')
             elif event.ui_element == self.ui_elements['btn_rnd_seed']:
                 self.ui_elements['input_seed'].set_text("")  # clear anything in there
                 self.ui_elements['input_seed'].set_text(gen_int_string(10))

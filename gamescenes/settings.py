@@ -3,7 +3,7 @@ from pygame import Rect
 from pygame_gui.elements import UIPanel, UILabel, UIButton, UIDropDownMenu
 from localpaths import SETTINGS_FILE
 from lib.base import GameScene
-from lib.const import GUI_BUTTON_PRESSED, GUI_DROP_DOWN_CHANGED, CHANGE_GAME_SCENE
+from lib.const import GUI_BUTTON_PRESSED, GUI_DROP_DOWN_CHANGED, EVENT_CHANGE_GAME_SCENE
 from lib.eventbus import *
 from lib.config import get_param
 from lib.fileutil import write_json_to_file, read_from_json_file
@@ -69,7 +69,7 @@ class Settings(GameScene):
     def on_button_click(self, event):
         if event.type == GUI_BUTTON_PRESSED:
             if event.ui_element == self.ui_elements['btn_back']:
-                post_event(CHANGE_GAME_SCENE, to_scene='menu')
+                post_event(EVENT_CHANGE_GAME_SCENE, to_scene='menu')
             elif event.ui_element == self.ui_elements['btn_apply']:
                 self.save_settings()
                 self.game.reload_display()

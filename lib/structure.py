@@ -1,33 +1,43 @@
+from pygame import Rect
+from typing import Union, Any, Tuple
+
+
 class Grid(object):
     """
-    Grid
-    @version 1.0
+    Grid - version 1.0
 
-    Grid represents an area using a 2D array.  It provides utility functions for accessing and storing data and can be
-    used to represent points in space (2D space that is) by utilizing it's coordinate system.  The Grid itself does not
-    directly store any global location, but it does store data using X/Y coordinates that can then be converted into
-    global locations.
+    Basic Grid class.  Essentially a wrapper for a 2D array.  Provides get/set functionality to allow you to treat the
+    Grid class as an array.
 
-    While the Grid itself is basically just a wrapper for a 2D array, it provides access via over-riding the
-    functionality provided by getitem and setitem data model methods.  This allows Grid coordinates to be accessed a bit
-    more fluidly, for example:
-    g = Grid(30, 30)
-    point = g[(10, 10)]
+    Attributes
+    ----------
+    _w : int
+        private width value of the Grid
+    _h : int
+        private height value of the Grid
+    _grid : List[List[Any]]
+        private 2D array
 
-    It also implements the contains methods to allow for testing of points:
-    if (10, 10) in g:
-        # do something
+    Properties
+    ----------
+    width : int
+        returns the value of _w for the width
+    height : int
+        returns the value of _h for the height
 
-    As well as implementing a context manager for iterating the entire grid:
-    with grid as g:
-        for (x, y), point in g:
-            # do stuff
-
-    While these aren't the most necessary functions to have for the primary uses of the grid, it does provide the
-    functionality if it is required for niche cases.
+    Methods:
+    --------
+    __len__
+        supports len() call and returns the total length of the 2D array
+    __getitem__(Tuple[int, int]) : Any
+        returns the value at a given index
+    __setitem__(Tuple[int, int], Union[None, Any]) : None
+        sets the value at a given index
+    __delitem__(Tuple[int, int]) : None
+        removes the value at a given index, value is set to None
     """
 
-    def __init__(self, width, height):
+    def __init__(self, width: int, height: int):
         self._w, self._h = width, height
         self._grid = [
             [
@@ -36,96 +46,98 @@ class Grid(object):
         ]
 
     @property
-    def width(self):
+    def width(self) -> int:
         return self._w
 
     @property
-    def height(self):
+    def height(self) -> int:
         return self._h
 
-    def __contains__(self, point):
-        """
-        Implements the 'in' statement to allow for points to be checked using '(1, 1) in grid' syntax
-        :param point: tuple[int, int]
-        :return: boolean
-        """
-        return 0 <= point[0] < self._w and 0 <= point[1] < self._h
+    def __len__(self):
+        return self._w * self._h
 
-    def __getitem__(self, point):
-        """
-        Retrieve a value stored at a point.  If the point is invalid, None is returned.
-        :param point: tuple[int, int]
-        :return: any|None
-        """
-        if point in self:
-            return self._grid[point[1]][point[0]]
-        else:
+    def __getitem__(self, coord: Tuple[int, int]) -> Union[None, Any]:
+        return self._grid[coord[1]][coord[0]]
+
+    def __setitem__(self, coord: Tuple[int, int], value: Union[None, Any]):
+        self._grid[coord[1]][coord[0]] = value
+
+    def __delitem__(self, coord: Tuple[int, int]):
+        self._grid[coord[1]][coord[0]] = None
+
+
+class SafeGrid(Grid):
+    """
+    SafeGrid - version 1.0
+    Subclass of Grid
+
+    Safe version of the Grid class, performs a try/catch to prevent index errors but otherwise is identical in function
+    to the Grid class.
+
+    Attributes & Methods
+    --------------------
+    Inherited from Grid
+
+    """
+
+    def __getitem__(self, coord: Tuple[int, int]) -> Union[None, Any]:
+        try:
+            return self._grid[coord[1]][coord[0]]
+        except IndexError:
             return None
 
-    def __setitem__(self, point, value):
-        """
-        Sets a value at a point.  If the point is invalid, no action is taken.
-        :param point: tuple[int, int]
-        :param value: any
-        :return: None
-        """
-        if point in self:
-            self._grid[point[1]][point[0]] = value
+    def __setitem__(self, coord: Tuple[int, int], value: Union[None, Any]):
+        try:
+            self._grid[coord[1]][coord[0]] = value
+        except IndexError:
+            return None
 
-    def __delitem__(self, point):
-        """
-        Deletes a value at a point, it does not remove the coordinate, it simply sets it's value to None
-        :param point: tuple[int, int]
-        :return: None
-        """
-        if point in self:
-            self._grid[point[1]][point[0]] = None
-
-    def __enter__(self):
-        """
-        Implements context manager syntax to allow for the Grid to be iterated on.  Example 'with grid as (x, y), value'
-        :return: tuple[int, int], any
-        """
-        for y in range(self._h):
-            for x in range(self._w):
-                yield (x, y), self[(x, y)]
-
-    def __exit__(self, *args):
-        """
-        Required for context manager support, this doesn't do anything special.
-        :param args: any
-        :return: boolean
-        """
-        return True
+    def __delitem__(self, coord: Tuple[int, int]):
+        try:
+            del self._grid[coord[1]][coord[0]]
+        except IndexError:
+            return None
 
 
-class TileEntityTransferObject(object):
+class RectGrid(Grid):
     """
-    TileEntityTransferObject
-    @version 1.0
+    RectGrid - version 1.0
+    Subclass of Grid
 
-    This is just a skeleton right now, but it's purpose will be to store tile entities for a map or saved game.  These
-    entities will be tracked here and this object should be used to inject tile entities into a game map.
+    Builds a Grid of Rect objects to cover an area.  Takes extra cell size parameters and constructs a Rect for each
+    cell that represents the area of the cell.
+
+    Attributes
+    ----------
+    _cw : int
+        private width of each individual cell
+    _ch : int
+        private height of each individual cell
+
+    Methods
+    -------
+    Note, inherits the same methods as the Grid class, however, set and del item methods are disabled and will throw
+    NotImplemented errors.  This is to prevent deleting or overwriting of Rect data at a Cell.
     """
 
-    def __init__(self, tile_entities: dict):
-        pass
+    def __init__(self, width: int, height: int, cell_width: int, cell_height: int):
+        super().__init__(width, height)
+        self._cw, self._ch = cell_width, cell_height
+        for y in range(self.height):
+            for x in range(self.width):
+                r = Rect(x * cell_width, y * cell_height, cell_width, cell_height)
+                self[(x, y)] = r
 
+    @property
+    def cell_width(self) -> int:
+        return self._cw
 
-class MapTransferObject(object):
-    """
-    MapTransferObject
-    @version 1.0
+    @property
+    def cell_height(self) -> int:
+        return self._ch
 
-    Used to load and save data to and from Map utilities.
-    """
+    def __setitem__(self, coord: Tuple[int, int], value: Union[None, Any]):
+        raise NotImplemented("RectGrid does not support assignment")
 
-    def __init__(self, map_data: dict):
-        self.name = map_data['name']
-        self.desc = map_data.get('desc', 'No Description')
-        self.size = map_data['size']
-        self.tile_grid = Grid(*self.size)
-        for x, y, tile_type in map_data['tiles']:
-            # TODO we'll want to make this a tile object of some sort
-            self.tile_grid[(x, y)] = tile_type
-        self.tile_entities = TileEntityTransferObject(map_data['tile_entities'])
+    def __delitem__(self, coord: Tuple[int, int]):
+        raise NotImplemented("RectGrid does not support deletion")

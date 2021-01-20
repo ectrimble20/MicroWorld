@@ -1,0 +1,8 @@
+Version 1.0 - includes all the existing this I didn't log.
+
+Version 1.1
+
+- Streamlining the Grid class, removing checks to increase speed.
+- Adding Rect Grid class, same as a Grid only it contains Rect objects as elements and holds cell sizes
+- Adding SafeGrid, basically the old grid with checks.
+- Removing ContextManager from Grid, performance is slow and the use case just isn't there.

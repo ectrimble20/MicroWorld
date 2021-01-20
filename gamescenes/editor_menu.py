@@ -4,7 +4,7 @@ from pygame_gui.elements import UIPanel, UILabel, UIButton
 from lib.base import GameScene
 from lib.const import GUI_BUTTON_PRESSED
 from lib.eventbus import *
-from lib.const import CHANGE_GAME_SCENE
+from lib.const import EVENT_CHANGE_GAME_SCENE
 from lib.config import get_param
 
 
@@ -45,7 +45,7 @@ class MapEditorMenu(GameScene):
     def on_button_click(self, event):
         if event.type == GUI_BUTTON_PRESSED:
             if event.ui_element == self.ui_elements['btn_back']:
-                post_event(CHANGE_GAME_SCENE, to_scene='menu')
+                post_event(EVENT_CHANGE_GAME_SCENE, to_scene='menu')
             elif event.ui_element == self.ui_elements['btn_load']:
-                post_event(CHANGE_GAME_SCENE, to_scene='editor_load')
+                post_event(EVENT_CHANGE_GAME_SCENE, to_scene='editor_load')
 

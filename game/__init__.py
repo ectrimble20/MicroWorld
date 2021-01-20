@@ -22,7 +22,7 @@ class GameController(object):
         logging.debug("GameController initialized")
         # initialize event handling
         bind_listener(self.quit_game, pg.QUIT)
-        bind_listener(self.change_game_scene, CHANGE_GAME_SCENE)
+        bind_listener(self.change_game_scene, EVENT_CHANGE_GAME_SCENE)
 
     @property
     def current_scene(self):
@@ -86,14 +86,14 @@ class GameController(object):
 
     def on_quit(self):
         unbind_listener(self.quit_game, pg.QUIT)
-        unbind_listener(self.change_game_scene, CHANGE_GAME_SCENE)
+        unbind_listener(self.change_game_scene, EVENT_CHANGE_GAME_SCENE)
 
     def quit_game(self, e):
         if e.type == pg.QUIT:
             self.running = False
 
     def change_game_scene(self, e):
-        if e.type == CHANGE_GAME_SCENE:
+        if e.type == EVENT_CHANGE_GAME_SCENE:
             logging.debug(f"Changing scene from {self.active_scene} to {e.to_scene}")
             self.current_scene.on_exit()
             self.active_scene = e.to_scene

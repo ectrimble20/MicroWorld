@@ -2,7 +2,7 @@ import logging
 from pygame import Rect
 from pygame_gui.elements import UIPanel, UILabel, UIButton, UIDropDownMenu
 from lib.base import GameScene
-from lib.const import GUI_BUTTON_PRESSED, CHANGE_GAME_SCENE
+from lib.const import GUI_BUTTON_PRESSED, EVENT_CHANGE_GAME_SCENE
 from lib.eventbus import *
 from lib.config import get_param
 
@@ -54,10 +54,10 @@ class MapSelect(GameScene):
     def on_button_click(self, event):
         if event.type == GUI_BUTTON_PRESSED:
             if event.ui_element == self.ui_elements['btn_back']:
-                post_event(CHANGE_GAME_SCENE, to_scene='menu')
+                post_event(EVENT_CHANGE_GAME_SCENE, to_scene='menu')
             elif event.ui_element == self.ui_elements['btn_next']:
                 print(f"Next: >{self.ui_elements['l_dd_game_map'].selected_option}")
                 if self.ui_elements['l_dd_game_map'].selected_option == 'Existing':
-                    post_event(CHANGE_GAME_SCENE, to_scene='select_existing_map')
+                    post_event(EVENT_CHANGE_GAME_SCENE, to_scene='select_existing_map')
                 elif self.ui_elements['l_dd_game_map'].selected_option == 'Random':
-                    post_event(CHANGE_GAME_SCENE, to_scene='generate_random_map')
+                    post_event(EVENT_CHANGE_GAME_SCENE, to_scene='generate_random_map')
